@@ -34,19 +34,35 @@ def search_command(opts):
     return search(opts.pattern)
 
 
+def packages_command(opts):
+    print('{} - Not yet implemented'.format(opts.command))
+
+
+def components_command(opts):
+    print('{} - Not yet implemented'.format(opts.command))
+
+
 def create_parser(prog_name):
     parser = ArgumentParser(prog=prog_name)
-    sp = parser.add_subparsers(title='commands', description='valid commands:')
+    sp = parser.add_subparsers(title='commands', dest='command', description='valid commands:')
     search = sp.add_parser('search', help='Search for a file within an installed component')
     search.add_argument('pattern', help='Name of the file')
     search.set_defaults(func=search_command)
+    packages = sp.add_parser('packages', help='Inventory packages on this system')
+    packages.set_defaults(func=packages_command)
+    components = sp.add_parser('components', help='Show components of a package')
+    components.add_argument('pattern', help='Name of the package')
+    components.set_defaults(func=components_command)
     return parser
 
 
 def main():
     parser = create_parser(sys.argv[0])
     opts = parser.parse_args(sys.argv[1:])
-    opts.func(opts)
+    if not hasattr(opts, 'func'):
+        parser.print_help()
+    else:
+        opts.func(opts)
 
 
 if __name__ == '__main__':
